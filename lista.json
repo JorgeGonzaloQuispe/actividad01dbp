@@ -1,0 +1,53 @@
+{
+  "animes":
+  [
+    {
+      "id":1,
+      "titulo": "jujutsu kaisen",
+      "puntaje": "86%",
+      "tipo": "serie animada",
+      "season":2,
+      "generos":["action","Drama","supernatural"]
+    }
+  ,{
+      "id":2,
+      "titulo": "Mushoku Tensei",
+      "puntaje": "83%",
+      "tipo": "serie animada",
+      "season":1,
+      "generos":["Adventure","Drama","Ecchi","fantasy"]
+    }
+  ,{
+      "id":3,
+      "titulo": "Kage no Jitsuryokusha ni Naritakute",
+      "puntaje": "81%",
+      "tipo": "serie animada",
+      "season":1,
+      "generos":["action","Comedy","Fantasy"]
+    }
+  ,{
+      "id":4,
+      "titulo": "Shingeki no kyojin",
+      "puntaje": "86%",
+      "tipo": "serie animada",
+      "season":4,
+      "generos":["Action","Drama","Fantasy","Mystery","Psichological"]
+    }
+  ,{
+      "id":5,
+      "titulo": "SPY×FAMILY",
+      "puntaje": "84%",
+      "tipo": "serie animada",
+      "season":1,
+      "generos":["action","Comedy","Slice of life","Supernaural"]
+    }
+  ,{
+      "id":6,
+      "titulo": "Kimetsu no yaiba",
+      "puntaje": "84%",
+      "tipo": "serie animada",
+      "season":3,
+      "generos":["action","Adventure","Drama","Fantasy","supernatural"]
+    }
+  ]
+}
