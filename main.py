@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask,request
 import json
 app=Flask(__name__)
 #cargo los datos del archivo Json
@@ -19,7 +18,7 @@ def get_nombres_animes():
 def get_info_anime(id):
     anime=next((anime for anime in animes_data["animes"] if anime["id"]==id),None)
     response = "Anime no encontrado\nERROR 404"
-    if anime:
+    if anime != None:
         informacion=[f"Titulo:{anime['titulo']}"
                      f"\nID:{anime['id']} "
                      f"\nPuntaje:{anime['puntaje']}"
@@ -30,6 +29,25 @@ def get_info_anime(id):
         return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
     return response, 200,{'Content-Type': 'text/plain; charset=utf-8'}
 
+# METODO PATCH
+@app.route('/anime/<int:id>', methods=['PATCH'])
+def short_edition(id):
+    anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
+    response = "Anime no encontrado\nERROR 404"
+    if anime != None:
+        datosanime = request.json
+        for i, value in datosanime.items():
+            if i in anime:
+                anime[i] = value
+        informacion = [f"Titulo:{anime['titulo']}"
+                       f"\nID:{anime['id']} "
+                       f"\nPuntaje:{anime['puntaje']}"
+                       f"\nTipo:{anime['tipo']}"
+                       f"\nSeason:{anime['season']}"
+                       f"\nGeneros:{anime['generos']}"]
+        response = "".join(informacion)
+        return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+    return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
 if __name__ == '__main__':
     app.run(debug=True)
