@@ -4,7 +4,16 @@ app=Flask(__name__)
 #cargo los datos del archivo Json
 with open('lista.json','r') as json_file:
     animes_data=json.load(json_file)
-
+def imprimir_anime(anime):
+    informacion = [
+        f"ID: {anime['id']}",
+        f"Titulo: {anime['titulo']}",
+        f"Puntaje: {anime['puntaje']}",
+        f"Tipo: {anime['tipo']}",
+        f"Season: {anime['season']}",
+        f"Generos: {anime['generos']}"
+    ]
+    return "\n".join(informacion)
 # METODO GET
 @app.route('/anime',methods=['GET'])
 def get_nombres_animes():
@@ -18,13 +27,7 @@ def get_info_anime(id):
     anime=next((anime for anime in animes_data["animes"] if anime["id"]==id),None)
     response = "Anime no encontrado\nERROR 404"
     if anime != None:
-        informacion=[f"Titulo:{anime['titulo']}"
-                     f"\nID:{anime['id']} "
-                     f"\nPuntaje:{anime['puntaje']}"
-                     f"\nTipo:{anime['tipo']}"
-                     f"\nSeason:{anime['season']}"
-                     f"\nGeneros:{anime['generos']}"]
-        response="".join(informacion)
+        response=imprimir_anime(anime)
         return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
     return response, 200,{'Content-Type': 'text/plain; charset=utf-8'}
 
@@ -32,7 +35,6 @@ def get_info_anime(id):
 @app.route('/anime/<int:id>', methods=['PATCH'])
 def short_edition(id):
     anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
-    response = "Anime no encontrado\nERROR 404"
     if anime != None:
         datosanime = request.json
         if datosanime and "id" in datosanime and datosanime["id"] != anime["id"]:
@@ -40,21 +42,13 @@ def short_edition(id):
         for i, dato in datosanime.items():
             if i in anime:
                 anime[i] = dato
-        informacion = [f"Titulo:{anime['titulo']}"
-                       f"\nID:{anime['id']} "
-                       f"\nPuntaje:{anime['puntaje']}"
-                       f"\nTipo:{anime['tipo']}"
-                       f"\nSeason:{anime['season']}"
-                       f"\nGeneros:{anime['generos']}"]
-        response = "".join(informacion)
-        return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
-    return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+        return imprimir_anime(anime)
+    return "Anime no encontrado\nERROR 404"
 
 # METODO PUT changes all or replace it
 @app.route('/anime/<int:id>', methods=['PUT'])
 def complete_edition(id):
     anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
-    response = "Anime no encontrado\nERROR 404"
     if anime != None:
         datosanime = request.json
         if len(datosanime)<6:
@@ -64,35 +58,20 @@ def complete_edition(id):
         for i, dato in datosanime.items():
             if i in anime:
                 anime[i] = dato
-        informacion = [f"Titulo:{anime['titulo']}"
-                       f"\nID:{anime['id']} "
-                       f"\nPuntaje:{anime['puntaje']}"
-                       f"\nTipo:{anime['tipo']}"
-                       f"\nSeason:{anime['season']}"
-                       f"\nGeneros:{anime['generos']}"]
-        response = "".join(informacion)
-        return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
-    return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+        return imprimir_anime(anime)
+    return "Anime no encontrado\nERROR 404"
 
 #METODO POST
 @app.route('/anime/<int:id>',methods=['POST'])
 def nuevo_anime(id):
     anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
-    response = "Anime ya existe\nno hubieron cambios"
     if anime ==None:
         new=request.json
         if new["id"]!=id:
             return "Ids no coinciden\nSin cambios realizados"
         animes_data["animes"].append(new)
-        informacion = [f"Titulo:{new['titulo']}"
-                       f"\nID:{new['id']} "
-                       f"\nPuntaje:{new['puntaje']}"
-                       f"\nTipo:{new['tipo']}"
-                       f"\nSeason:{new['season']}"
-                       f"\nGeneros:{new['generos']}"]
-        response = "".join(informacion)
-        return response
-    return response
+        return imprimir_anime(new)
+    return "Anime ya existe\nno hubieron cambios"
 
 # METODO DELETE-Elimina
 @app.route('/anime/<int:id>',methods=['DELETE'])
