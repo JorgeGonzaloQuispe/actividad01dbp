@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask,request,jsonify
 import json
 app=Flask(__name__)
 #cargo los datos del archivo Json
@@ -35,6 +35,8 @@ def short_edition(id):
     response = "Anime no encontrado\nERROR 404"
     if anime != None:
         datosanime = request.json
+        if datosanime and "id" in datosanime and datosanime["id"] != anime["id"]:
+            return "Ids no coinciden\nSin cambios realizados"
         for i, dato in datosanime.items():
             if i in anime:
                 anime[i] = dato
@@ -53,11 +55,13 @@ def short_edition(id):
 def complete_edition(id):
     anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
     response = "Anime no encontrado\nERROR 404"
-    numero=0
     if anime != None:
         datosanime = request.json
+        if len(datosanime)<6:
+            return "Información incompleta\nsin cambios realizados"
+        if datosanime["id"]!=id:
+            return "Ids no coinciden\nSin cambios realizados"
         for i, dato in datosanime.items():
-            numero=numero+1
             if i in anime:
                 anime[i] = dato
         informacion = [f"Titulo:{anime['titulo']}"
@@ -67,10 +71,27 @@ def complete_edition(id):
                        f"\nSeason:{anime['season']}"
                        f"\nGeneros:{anime['generos']}"]
         response = "".join(informacion)
-        if numero !=6:
-            return "sin cambios"
         return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
     return response, 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
+#METODO POST
+@app.route('/anime/<int:id>',methods=['POST'])
+def add_new(id):
+    anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
+    response = "Anime ya existe\nno hubieron cambios"
+    if anime ==None:
+        new=request.json
+        if new["id"]!=id:
+            return "Ids no coinciden\nSin cambios realizados"
+        animes_data["animes"].append(new)
+        informacion = [f"Titulo:{new['titulo']}"
+                       f"\nID:{new['id']} "
+                       f"\nPuntaje:{new['puntaje']}"
+                       f"\nTipo:{new['tipo']}"
+                       f"\nSeason:{new['season']}"
+                       f"\nGeneros:{new['generos']}"]
+        response = "".join(informacion)
+        return response
+    return response
 if __name__ == '__main__':
     app.run(debug=True)
