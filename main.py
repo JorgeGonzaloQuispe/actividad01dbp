@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request
 import json
 app=Flask(__name__)
 #cargo los datos del archivo Json
@@ -76,7 +76,7 @@ def complete_edition(id):
 
 #METODO POST
 @app.route('/anime/<int:id>',methods=['POST'])
-def add_new(id):
+def nuevo_anime(id):
     anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
     response = "Anime ya existe\nno hubieron cambios"
     if anime ==None:
@@ -93,5 +93,15 @@ def add_new(id):
         response = "".join(informacion)
         return response
     return response
+
+# METODO DELETE-Elimina
+@app.route('/anime/<int:id>',methods=['DELETE'])
+def eliminar_anime(id):
+    anime = next((anime for anime in animes_data["animes"] if anime["id"] == id), None)
+    if anime != None:
+        animes_data["animes"].remove(anime)
+        return "Anime eliminado \ncorrectamente"
+    return "Id No existe\nno hubieron cambios"
+
 if __name__ == '__main__':
     app.run(debug=True)
